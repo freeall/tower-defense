@@ -1,0 +1,111 @@
+html, body {
+	background-color: #ddd;
+	width: 100%;
+	text-align: center;
+	font-family: arial;
+	font-size: 12px;
+	cursor: default;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.clear {
+	clear: both;
+}
+.green {
+	color: green;
+}
+.red {
+	color: red;
+}
+#game {
+	background-color: #ccc;
+	position: relative;
+}
+.block {
+	width: 16px;
+	height: 16px;
+	position: absolute;
+}
+.health {
+	margin-top: 6px;
+	display: none;
+}
+.health div {
+	float: left;
+	height: 4px;
+}
+.health .left {
+	background-color: green;
+}
+.health .used {
+	background-color: red;
+}
+.shell {
+	width: 5px;
+	height: 5px;
+	position: absolute;
+	background-color: orange;
+}
+.weapon {
+	width: 16px;
+	height: 16px;
+	margin-left: auto;
+	margin-right: auto;
+}
+.weapon:hover {
+	cursor:hand;
+}
+.listing {
+	float: left;
+	text-align: center;
+	margin: 0 10px;
+}
+.listing div {
+	margin-bottom: 5px;
+}
+#weapons .discard {
+	display: none;
+	font-size: 18px;
+	padding-top: 5px;
+	cursor: hand;
+}
+#small {
+	background-color: orange;
+}
+#medium {
+	background-color: purple;
+}
+#large {
+	background-color: black;
+}
+#control {
+	margin-top: 10px;
+	background-color: #ccc;
+}
+#control .inner {
+	padding: 20px;
+}
+#weapons {
+	float: left;
+}
+#info {
+	float: right;
+}
+.box {
+	float: left;
+	border: 1px dashed #eee;
+	padding: 5px;
+	margin-left: 10px;
+}
+.box .header {
+	float: left;
+	font-size: 20px;
+}
+.box .amount {
+	float: left;
+	width: 20px;
+	padding: 3px 0 0 4px;
+}
