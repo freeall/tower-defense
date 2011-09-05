@@ -80,7 +80,7 @@ var createBasicEnemy = function() {
 			this.alive = false;
 
 			if (!enemies.length) {
-				startNextRound();
+				startNextWave();
 			}
 
 			updateInfo();
@@ -174,11 +174,16 @@ var addWeapon = function(weapon,pos) {
 	if (arrEqual(pos,endPoint)) {
 		return false;
 	}
-	for (var i=0; i<road.length; i++) {
-		if (arrEqual(pos,road[i])) {
+	road.forEach(function(block) {
+		if (arrEqual(block,pos)) {
 			return false;
 		}
-	}
+	});
+	enemies.forEach(function(enemy) {
+		if (arrEqual(enemy,pos)) {
+			return false;
+		}
+	});
 
 	weapon.elm.css({left:pos[0]*SIZE,top:pos[1]*SIZE});
 	weapon.point = pos;
@@ -218,6 +223,21 @@ var drawCurrentWeapon = function(e) {
 };
 
 var createSmallWeapon = function() {
+	var findEnemy = function() {
+		for (var i=0; i<enemies.length; i++) {
+			var enemy = enemies[i];
+			var x = Math.pow(enemy.point[0] - weapon.point[0],2);
+			var y = Math.pow(enemy.point[1] - weapon.point[1],2);
+			var distance = Math.sqrt(x + y);
+
+			if (enemy.alive && distance <= weapon.radius) {
+				return enemy;
+			}
+		}
+
+		return null;
+	};
+
 	var weapon = {
 		type: 'small',
 		speed: 1000,
@@ -226,35 +246,35 @@ var createSmallWeapon = function() {
 		radius: 4,
 		elm: block([-1,-1],'orange'),
 		check: function() {
-			for (var i=0; i<enemies.length; i++) {
-				var enemy = enemies[i];
-				var x = Math.pow(enemy.point[0] - weapon.point[0],2);
-				var y = Math.pow(enemy.point[1] - weapon.point[1],2);
-				var distance = Math.sqrt(x + y);
+			var enemy = findEnemy();
 
-				if (!enemy.alive || distance > weapon.radius) {
-					continue;
-				}
+			if (!enemy) {
+				setTimeout(weapon.check, weapon.timeout);
+				return;
+			}
 
-				var top = $(weapon.elm).offset().top + SIZE/2-3 + 'px';
-				var left = $(weapon.elm).offset().left + SIZE/2-3 + 'px';
-				var elm = $('<div class="shell" style="top:'+top+';left:'+left+'"></div>');
+			var top = $(weapon.elm).offset().top + SIZE/2-3 + 'px';
+			var left = $(weapon.elm).offset().left + SIZE/2-3 + 'px';
+			var elm = $('<div class="shell" style="top:'+top+';left:'+left+'"></div>');
 
-				elm.animate({
-					top: $(enemy.elm).offset().top + SIZE/2 + 'px',
-					left: $(enemy.elm).offset().left + SIZE/2 + 'px',
-				}, {
-					duration: 500,
-					complete: function() {
-						enemy.hit(weapon.damage);
-						elm.remove();
+			elm.animate({
+				top: $(enemy.elm).offset().top + SIZE/2 + 'px',
+				left: $(enemy.elm).offset().left + SIZE/2 + 'px',
+			}, {
+				duration: 500,
+				complete: function() {
+					var newEnemy = findEnemy(); // the original enemy might be dead by now
+
+					if (newEnemy) {
+						newEnemy.hit(weapon.damage);
 					}
-				});
+					
+					elm.remove();
+				}
+			});
 
-				elm.appendTo($('body'));
+			elm.appendTo($('body'));
 
-				break;
-			};
 			setTimeout(weapon.check, weapon.speed);
 		}
 	};
@@ -276,7 +296,7 @@ var updateInfo = function() {
 	
 };
 
-var startNextRound = function() {
+var startNextWave = function() {
 	if (!rounds.length) {
 		alert('You won!');
 		return;
@@ -329,6 +349,5 @@ $(function() {
 	block(startPoint, 'green');
 	block(endPoint, 'red');
 	createRoad();
-
-	startNextRound();
+	startNextWave();
 });
